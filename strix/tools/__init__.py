@@ -28,6 +28,8 @@ HAS_PERPLEXITY_API = bool(Config.get("perplexity_api_key"))
 
 DISABLE_BROWSER = (Config.get("strix_disable_browser") or "false").lower() == "true"
 
+HAS_HEXSTRIKE = bool(os.getenv("HEXSTRIKE_SERVER_URL"))
+
 if not SANDBOX_MODE:
     from .agents_graph import *  # noqa: F403
 
@@ -35,6 +37,7 @@ if not SANDBOX_MODE:
         from .browser import *  # noqa: F403
     from .file_edit import *  # noqa: F403
     from .finish import *  # noqa: F403
+    from .hexstrike import *  # noqa: F403
     from .notes import *  # noqa: F403
     from .proxy import *  # noqa: F403
     from .python import *  # noqa: F403

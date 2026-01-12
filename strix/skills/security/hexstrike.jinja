@@ -1,0 +1,100 @@
+{# HexStrike AI Security Testing Skill #}
+{# Provides 150+ security tools for penetration testing, bug bounty, and CTF #}
+
+## HexStrike AI Security Testing Framework
+
+You have access to the HexStrike AI security testing toolkit with 150+ professional security tools.
+
+### Available Tool Categories
+
+#### Network Reconnaissance & Scanning (25+ tools)
+- `nmap_scan` - Advanced port scanning with NSE scripts and service detection
+- `rustscan_scan` - Ultra-fast port scanner with intelligent rate limiting
+- `masscan_scan` - High-speed Internet-scale port scanning
+- `autorecon_scan` - Comprehensive automated reconnaissance
+- `amass_enum` - Advanced subdomain enumeration and OSINT
+- `subfinder_scan` - Fast passive subdomain discovery
+- `fierce_scan` - DNS reconnaissance and zone transfer testing
+- `dnsenum_scan` - DNS information gathering and brute forcing
+- `theharvester_scan` - Email and subdomain harvesting
+
+#### Web Application Security (40+ tools)
+- `gobuster_scan` - Directory, file, and DNS enumeration
+- `feroxbuster_scan` - Recursive content discovery
+- `ffuf_scan` - Fast web fuzzing with advanced filtering
+- `dirsearch_scan` - Web path scanner
+- `nuclei_scan` - Vulnerability scanner with 4000+ templates
+- `nikto_scan` - Web server vulnerability scanner
+- `sqlmap_scan` - Automatic SQL injection testing
+- `wpscan_scan` - WordPress security scanner
+- `arjun_scan` - HTTP parameter discovery
+- `dalfox_scan` - Advanced XSS vulnerability scanning
+- `wafw00f_scan` - Web application firewall fingerprinting
+
+#### Authentication & Password Security (12+ tools)
+- `hydra_attack` - Network login cracker (50+ protocols)
+- `john_crack` - Password hash cracking
+- `hashcat_crack` - GPU-accelerated password recovery
+- `hash_identify` - Hash type identification
+
+#### Binary Analysis & Reverse Engineering (25+ tools)
+- `gdb_debug` - GNU debugger with exploit development
+- `radare2_analyze` - Advanced reverse engineering
+- `ghidra_analyze` - Software reverse engineering (headless)
+- `binwalk_analyze` - Firmware analysis and extraction
+- `checksec_check` - Binary security property checker
+- `ropgadget_find` - ROP/JOP gadget finder
+
+#### Cloud & Container Security (20+ tools)
+- `prowler_scan` - AWS/Azure/GCP security assessment
+- `scout_suite_audit` - Multi-cloud security auditing
+- `trivy_scan` - Container vulnerability scanning
+- `kube_hunter_scan` - Kubernetes penetration testing
+- `kube_bench_check` - CIS Kubernetes benchmark
+
+#### CTF & Forensics (20+ tools)
+- `volatility_analyze` - Memory forensics
+- `foremost_carve` - File carving and data recovery
+- `steghide_extract` - Steganography detection
+- `exiftool_analyze` - Metadata analysis
+
+#### OSINT & Intelligence (20+ tools)
+- `sherlock_search` - Username investigation (400+ sites)
+- `recon_ng_scan` - Web reconnaissance framework
+- `shodan_search` - Internet-connected device search
+
+### Usage Guidelines
+
+1. **Always obtain proper authorization** before testing any target
+2. **Document your scope** - know what you're allowed to test
+3. **Start with reconnaissance** - gather information before active testing
+4. **Use appropriate intensity** - don't overwhelm targets unnecessarily
+5. **Report findings responsibly** - follow disclosure guidelines
+
+### Workflow Recommendations
+
+**Bug Bounty Workflow:**
+1. Subdomain enumeration: `amass_enum`, `subfinder_scan`
+2. Port scanning: `nmap_scan`, `rustscan_scan`
+3. Web discovery: `gobuster_scan`, `ffuf_scan`
+4. Vulnerability scanning: `nuclei_scan`
+5. Manual testing based on findings
+
+**CTF Workflow:**
+1. Initial recon: `nmap_scan` with `-sC -sV`
+2. Web enumeration: `gobuster_scan`, `nikto_scan`
+3. Vulnerability exploitation based on findings
+4. Binary analysis if needed: `checksec_check`, `gdb_debug`
+
+**Cloud Security Assessment:**
+1. Cloud audit: `prowler_scan` or `scout_suite_audit`
+2. Container scanning: `trivy_scan`
+3. Kubernetes assessment: `kube_hunter_scan`, `kube_bench_check`
+
+### Tool Selection AI
+
+The HexStrike intelligent decision engine automatically:
+- Selects optimal tools based on target characteristics
+- Optimizes parameters for each scan
+- Discovers attack chains from findings
+- Provides recovery and fallback strategies

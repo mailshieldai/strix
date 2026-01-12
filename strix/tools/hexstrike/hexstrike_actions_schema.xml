@@ -1,0 +1,418 @@
+<tools>
+  <!-- =================================================================== -->
+  <!-- Network Scanning Tools -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_nmap_scan">
+    <description>Execute an enhanced Nmap scan against a target for port discovery, service detection, and vulnerability scanning. Requires HexStrike server running.</description>
+    <parameters>
+      <parameter name="target" type="string" required="true">
+        <description>IP address, hostname, or CIDR range to scan (e.g., "192.168.1.1", "example.com", "10.0.0.0/24")</description>
+      </parameter>
+      <parameter name="scan_type" type="string" required="false">
+        <description>Nmap scan type flags:
+- "-sV" (default): Version detection
+- "-sS": SYN stealth scan
+- "-sC": Default scripts
+- "-sU": UDP scan
+- "-A": Aggressive (OS, version, scripts, traceroute)
+- "-Pn": Skip host discovery</description>
+      </parameter>
+      <parameter name="ports" type="string" required="false">
+        <description>Ports to scan. Examples: "22,80,443", "1-1000", "1-65535", "-" (all ports)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Nmap arguments (e.g., "-O -T4 --script vuln")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Scan results containing:
+- success: Boolean indicating scan completion
+- stdout: Raw Nmap output
+- open_ports: List of discovered open ports
+- services: Service information per port
+- vulnerabilities: Any detected vulnerabilities</description>
+    </returns>
+    <examples>
+      <function=hexstrike_nmap_scan>
+      <parameter=target>192.168.1.1</parameter>
+      <parameter=scan_type>-sV -sC</parameter>
+      <parameter=ports>22,80,443,8080</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_gobuster_scan">
+    <description>Execute Gobuster for directory brute-forcing, subdomain enumeration, or virtual host discovery on web targets.</description>
+    <parameters>
+      <parameter name="url" type="string" required="true">
+        <description>Target URL (e.g., "https://example.com")</description>
+      </parameter>
+      <parameter name="mode" type="string" required="false">
+        <description>Scan mode:
+- "dir" (default): Directory/file brute-force
+- "dns": Subdomain enumeration
+- "vhost": Virtual host discovery
+- "fuzz": Fuzzing mode</description>
+      </parameter>
+      <parameter name="wordlist" type="string" required="false">
+        <description>Path to wordlist file (default: /usr/share/wordlists/dirb/common.txt)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional arguments (e.g., "-x php,txt -t 50 -k")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Discovered paths, subdomains, or virtual hosts with status codes</description>
+    </returns>
+    <examples>
+      <function=hexstrike_gobuster_scan>
+      <parameter=url>https://example.com</parameter>
+      <parameter=mode>dir</parameter>
+      <parameter=additional_args>-x php,html -t 50</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_nuclei_scan">
+    <description>Execute Nuclei vulnerability scanner with 10,000+ templates covering CVEs, misconfigurations, and security issues.</description>
+    <parameters>
+      <parameter name="target" type="string" required="true">
+        <description>Target URL or IP to scan</description>
+      </parameter>
+      <parameter name="severity" type="string" required="false">
+        <description>Filter by severity levels (comma-separated): critical, high, medium, low, info</description>
+      </parameter>
+      <parameter name="tags" type="string" required="false">
+        <description>Filter by template tags (e.g., "cve,rce,lfi,xss,sqli,ssrf")</description>
+      </parameter>
+      <parameter name="template" type="string" required="false">
+        <description>Path to custom template or template directory</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Nuclei arguments (e.g., "-rate-limit 100 -c 50")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Discovered vulnerabilities with severity, description, and references</description>
+    </returns>
+    <examples>
+      <function=hexstrike_nuclei_scan>
+      <parameter=target>https://example.com</parameter>
+      <parameter=severity>critical,high</parameter>
+      <parameter=tags>cve,rce</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_sqlmap_scan">
+    <description>Execute SQLMap for automatic SQL injection detection and exploitation across multiple database types.</description>
+    <parameters>
+      <parameter name="url" type="string" required="true">
+        <description>Target URL with potential injection points. Use * to mark specific injection point.</description>
+      </parameter>
+      <parameter name="data" type="string" required="false">
+        <description>POST data for injection testing (e.g., "username=admin&password=*")</description>
+      </parameter>
+      <parameter name="cookie" type="string" required="false">
+        <description>HTTP cookies to include in requests</description>
+      </parameter>
+      <parameter name="level" type="integer" required="false">
+        <description>Test thoroughness level 1-5. Higher = more tests, slower (default: 1)</description>
+      </parameter>
+      <parameter name="risk" type="integer" required="false">
+        <description>Risk level 1-3. Higher = more dangerous payloads (default: 1)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional SQLMap arguments (e.g., "--dbs --dump --batch")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>SQL injection findings, database information, and extracted data</description>
+    </returns>
+    <examples>
+      <function=hexstrike_sqlmap_scan>
+      <parameter=url>https://example.com/page?id=1</parameter>
+      <parameter=level>2</parameter>
+      <parameter=additional_args>--dbs --batch</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_ffuf_scan">
+    <description>Execute FFUF (Fuzz Faster U Fool) for high-speed web fuzzing and endpoint discovery.</description>
+    <parameters>
+      <parameter name="url" type="string" required="true">
+        <description>Target URL with FUZZ placeholder (e.g., "https://example.com/FUZZ")</description>
+      </parameter>
+      <parameter name="wordlist" type="string" required="false">
+        <description>Path to wordlist for fuzzing (default: /usr/share/wordlists/dirb/common.txt)</description>
+      </parameter>
+      <parameter name="method" type="string" required="false">
+        <description>HTTP method: GET, POST, PUT, DELETE, etc. (default: GET)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional FFUF arguments (e.g., "-fc 404 -t 100 -mc 200,301")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Discovered endpoints with response codes and sizes</description>
+    </returns>
+    <examples>
+      <function=hexstrike_ffuf_scan>
+      <parameter=url>https://example.com/FUZZ</parameter>
+      <parameter=additional_args>-fc 404 -t 100</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <!-- =================================================================== -->
+  <!-- Subdomain Enumeration Tools -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_amass_enum">
+    <description>Execute Amass for comprehensive subdomain enumeration using OSINT, DNS brute-forcing, and certificate transparency.</description>
+    <parameters>
+      <parameter name="domain" type="string" required="true">
+        <description>Target domain to enumerate (e.g., "example.com")</description>
+      </parameter>
+      <parameter name="passive" type="boolean" required="false">
+        <description>Use passive enumeration only, no DNS resolution (default: true)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Amass arguments (e.g., "-brute -w wordlist.txt")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Discovered subdomains with resolution info and discovery sources</description>
+    </returns>
+    <examples>
+      <function=hexstrike_amass_enum>
+      <parameter=domain>example.com</parameter>
+      <parameter=passive>true</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_subfinder_scan">
+    <description>Execute Subfinder for fast passive subdomain discovery using multiple online sources.</description>
+    <parameters>
+      <parameter name="domain" type="string" required="true">
+        <description>Target domain to enumerate (e.g., "example.com")</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Subfinder arguments (e.g., "-all -silent")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>List of discovered subdomains from certificate transparency, DNS datasets, and search engines</description>
+    </returns>
+    <examples>
+      <function=hexstrike_subfinder_scan>
+      <parameter=domain>example.com</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <!-- =================================================================== -->
+  <!-- Web Application Security Tools -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_nikto_scan">
+    <description>Execute Nikto web server vulnerability scanner to check for dangerous files, outdated software, and misconfigurations.</description>
+    <parameters>
+      <parameter name="target" type="string" required="true">
+        <description>Target hostname or IP address</description>
+      </parameter>
+      <parameter name="port" type="integer" required="false">
+        <description>Target port (default: 80)</description>
+      </parameter>
+      <parameter name="ssl" type="boolean" required="false">
+        <description>Enable SSL/TLS for HTTPS targets (default: false)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Nikto arguments (e.g., "-Tuning 123")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Web server vulnerabilities, misconfigurations, and security issues</description>
+    </returns>
+    <examples>
+      <function=hexstrike_nikto_scan>
+      <parameter=target>example.com</parameter>
+      <parameter=port>443</parameter>
+      <parameter=ssl>true</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_wpscan_scan">
+    <description>Execute WPScan to identify WordPress vulnerabilities, exposed users, and outdated plugins/themes.</description>
+    <parameters>
+      <parameter name="url" type="string" required="true">
+        <description>WordPress site URL (e.g., "https://example.com/")</description>
+      </parameter>
+      <parameter name="enumerate" type="string" required="false">
+        <description>What to enumerate:
+- "vp": Vulnerable plugins
+- "vt": Vulnerable themes
+- "u": Users
+- "ap": All plugins
+- "at": All themes
+Combine with commas (default: "vp,vt,u")</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional WPScan arguments (e.g., "--api-token TOKEN")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>WordPress vulnerabilities, exposed users, outdated components</description>
+    </returns>
+    <examples>
+      <function=hexstrike_wpscan_scan>
+      <parameter=url>https://wordpress-site.com</parameter>
+      <parameter=enumerate>vp,vt,u</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <!-- =================================================================== -->
+  <!-- Password Attack Tools -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_hydra_attack">
+    <description>Execute Hydra for password brute-force attacks against 50+ network protocols.</description>
+    <parameters>
+      <parameter name="target" type="string" required="true">
+        <description>Target hostname or IP address</description>
+      </parameter>
+      <parameter name="service" type="string" required="true">
+        <description>Service to attack: ssh, ftp, http-get, http-post, smb, mysql, rdp, vnc, etc.</description>
+      </parameter>
+      <parameter name="username" type="string" required="false">
+        <description>Single username to test (mutually exclusive with username_file)</description>
+      </parameter>
+      <parameter name="username_file" type="string" required="false">
+        <description>Path to file containing usernames (one per line)</description>
+      </parameter>
+      <parameter name="password_file" type="string" required="false">
+        <description>Path to password wordlist (default: /usr/share/wordlists/rockyou.txt)</description>
+      </parameter>
+      <parameter name="additional_args" type="string" required="false">
+        <description>Additional Hydra arguments (e.g., "-t 4 -V")</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Valid credentials discovered during brute-force attack</description>
+    </returns>
+    <notes>
+      Use responsibly and only on systems you have authorization to test.
+      Password attacks can generate significant network traffic and log entries.
+    </notes>
+    <examples>
+      <function=hexstrike_hydra_attack>
+      <parameter=target>192.168.1.1</parameter>
+      <parameter=service>ssh</parameter>
+      <parameter=username>admin</parameter>
+      <parameter=additional_args>-t 4</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <!-- =================================================================== -->
+  <!-- Generic Tool Execution -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_execute_tool">
+    <description>Execute any HexStrike security tool by name. Generic interface to access all 150+ tools.</description>
+    <parameters>
+      <parameter name="tool_name" type="string" required="true">
+        <description>Name of the HexStrike tool to execute (e.g., "masscan", "feroxbuster", "dalfox")</description>
+      </parameter>
+      <parameter name="arguments" type="object" required="false">
+        <description>Dictionary of tool-specific arguments</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Tool execution results specific to the tool invoked</description>
+    </returns>
+    <notes>
+      Available tool categories:
+      - Network: nmap, masscan, rustscan, autorecon
+      - Web: gobuster, feroxbuster, ffuf, dirb, dirsearch, katana
+      - Vuln: nuclei, nikto, sqlmap, dalfox, xsstrike
+      - Recon: amass, subfinder, fierce, dnsenum, theharvester
+      - Cloud: prowler, scout-suite, trivy, kube-hunter
+      - Password: hydra, john, hashcat, medusa
+      - Binary: gdb, radare2, binwalk, ghidra
+    </notes>
+    <examples>
+      <function=hexstrike_execute_tool>
+      <parameter=tool_name>masscan</parameter>
+      <parameter=arguments>{"target": "192.168.1.0/24", "ports": "1-1000", "rate": "1000"}</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_list_tools">
+    <description>List all 150+ available HexStrike security tools organized by category.</description>
+    <parameters>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Dictionary of available tools organized by category</description>
+    </returns>
+    <examples>
+      <function=hexstrike_list_tools>
+      </function>
+    </examples>
+  </tool>
+
+  <!-- =================================================================== -->
+  <!-- Intelligence & Analysis -->
+  <!-- =================================================================== -->
+
+  <tool name="hexstrike_analyze_target">
+    <description>Analyze a target using HexStrike's AI-powered intelligence for technology detection, attack surface mapping, and testing recommendations.</description>
+    <parameters>
+      <parameter name="target" type="string" required="true">
+        <description>Target URL, domain, or IP address to analyze</description>
+      </parameter>
+      <parameter name="analysis_type" type="string" required="false">
+        <description>Analysis depth:
+- "quick": Fast basic analysis
+- "comprehensive" (default): Full analysis with recommendations
+- "deep": Extended analysis including passive reconnaissance</description>
+      </parameter>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Target profile with:
+- Detected technologies and frameworks
+- Attack surface mapping
+- Vulnerability prioritization
+- Recommended testing strategies</description>
+    </returns>
+    <examples>
+      <function=hexstrike_analyze_target>
+      <parameter=target>https://example.com</parameter>
+      <parameter=analysis_type>comprehensive</parameter>
+      </function>
+    </examples>
+  </tool>
+
+  <tool name="hexstrike_server_status">
+    <description>Check HexStrike server connectivity, version, and available capabilities.</description>
+    <parameters>
+    </parameters>
+    <returns type="Dict[str, Any]">
+      <description>Server health status including:
+- status: Server status (online/offline)
+- version: HexStrike version
+- tools_count: Number of available tools
+- capabilities: Available features</description>
+    </returns>
+    <examples>
+      <function=hexstrike_server_status>
+      </function>
+    </examples>
+  </tool>
+</tools>
