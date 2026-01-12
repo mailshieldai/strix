@@ -1,9 +1,13 @@
+import logging
+import os
 import threading
 from datetime import UTC, datetime
 from typing import Any, Literal
 
 from strix.tools.registry import register_tool
 
+
+logger = logging.getLogger(__name__)
 
 _agent_graph: dict[str, Any] = {
     "nodes": {},
@@ -19,6 +23,25 @@ _running_agents: dict[str, threading.Thread] = {}
 _agent_instances: dict[str, Any] = {}
 
 _agent_states: dict[str, Any] = {}
+
+
+# Configuration: Maximum number of agents to prevent resource exhaustion
+# Set STRIX_UNSAFE_MODE=true to disable all limits (not recommended)
+_UNSAFE_MODE = os.environ.get("STRIX_UNSAFE_MODE", "false").lower() == "true"
+
+if _UNSAFE_MODE:
+    # Legacy behavior: No limits (unsafe - can exhaust system resources)
+    _MAX_AGENTS = 999999
+    _MAX_CONCURRENT_AGENTS = 999999
+    logger.warning(
+        "UNSAFE MODE ENABLED - Agent limits disabled! "
+        "This may cause resource exhaustion. Set STRIX_UNSAFE_MODE=false to enable limits."
+    )
+else:
+    # Safe mode: Configurable limits with sensible defaults
+    _MAX_AGENTS = int(os.environ.get("STRIX_MAX_AGENTS", "100"))
+    _MAX_CONCURRENT_AGENTS = int(os.environ.get("STRIX_MAX_CONCURRENT_AGENTS", "50"))
+    logger.debug(f"Agent limits enabled: {_MAX_AGENTS} total, {_MAX_CONCURRENT_AGENTS} concurrent")
 
 
 def _run_agent_in_thread(
@@ -193,6 +216,30 @@ def create_agent(
     skills: str | None = None,
 ) -> dict[str, Any]:
     try:
+        # Check agent limits to prevent resource exhaustion
+        total_agents = len(_agent_graph["nodes"])
+        concurrent_agents = len(_running_agents)
+
+        if total_agents >= _MAX_AGENTS:
+            return {
+                "success": False,
+                "error": (
+                    f"Maximum total agents ({_MAX_AGENTS}) reached. "
+                    "Cannot create more agents. Set STRIX_MAX_AGENTS to increase limit."
+                ),
+                "agent_id": None,
+            }
+
+        if concurrent_agents >= _MAX_CONCURRENT_AGENTS:
+            return {
+                "success": False,
+                "error": (
+                    f"Maximum concurrent agents ({_MAX_CONCURRENT_AGENTS}) reached. "
+                    "Wait for some agents to complete or set STRIX_MAX_CONCURRENT_AGENTS to increase limit."
+                ),
+                "agent_id": None,
+            }
+
         parent_id = agent_state.agent_id
 
         skill_list = []
